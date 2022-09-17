@@ -1,0 +1,10 @@
+[
+    "VirtualMachine",
+    "Datastore",
+    "VmwareDistributedVirtualSwitch",
+    "ClusterComputeResource",
+    "Infrastructure",
+    "Environment",
+    "Location",
+    "CustomDatacenter"  
+]

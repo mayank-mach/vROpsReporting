@@ -1,0 +1,11 @@
+[
+    "ClusterComputeResource",
+    "CustomDatacenter",
+    "DistributedVirtualPortgroup",
+    "Environment",
+    "HostSystem",
+    "Infrastructure",
+    "Location",
+    "VMFolder",
+    "VmwareDistributedVirtualSwitch"
+]

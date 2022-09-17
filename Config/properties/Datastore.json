@@ -1,0 +1,15 @@
+[
+    "config|name",
+    "summary|diskCapacity",
+    "summary|isLocal",
+    "summary|path",
+    "summary|accessible",
+    "summary|parentDatacenter",
+    "summary|parentVcenter",
+    "summary|type",
+    "datastore|hostcount",
+    "storageArray|id",
+    "storageArray|modelId",
+    "storageArray|name",
+    "storageArray|vendorId"
+]

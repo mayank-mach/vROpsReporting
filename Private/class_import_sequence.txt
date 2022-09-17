@@ -1,0 +1,4 @@
+Classes\vROpsResource.ps1
+Classes\vSphere\vSphere.ps1
+Classes\vSphere\HostSystem.ps1
+Classes\vSphere\ClusterCompteResource.ps1

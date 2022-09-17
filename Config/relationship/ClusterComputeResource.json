@@ -1,0 +1,9 @@
+[
+    "CustomDatacenter",
+    "Datastore",
+    "Environment",
+    "HostSystem",
+    "Infrastructure",
+    "Location",
+    "VirtualMachine"
+]

@@ -1,0 +1,11 @@
+[
+    "config|name",
+    "summary|parentDatacenter",
+    "summary|parentVcenter",
+    "configuration|dasConfig|enabled",
+    "configuration|dasConfig|admissionControlEnabled",
+    "configuration|dpmConfiginfo|enabled",
+    "configuration|dpmConfiginfo|defaultDpmBehavior",
+    "configuration|drsConfig|enabled",
+    "configuration|drsConfig|defaultVmBehavior"    
+]
