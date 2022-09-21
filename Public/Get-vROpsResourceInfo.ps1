@@ -22,7 +22,7 @@ function Get-vROpsResourceInfo
     {
         $body = [PSCustomObject]@{
             name = @($Name)
-        } | ConvertTo-Json
+        }
 
         if ($vROpsServer)
         {
