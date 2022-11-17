@@ -62,7 +62,8 @@ ScriptsToProcess = @(
     ".\Classes\vSphere\vSphere.ps1",
     ".\Classes\vSphere\HostSystem.ps1",
     ".\Classes\vSphere\ClusterCompteResource.ps1",
-    ".\Classes\vSphere\Datastore.ps1"
+    ".\Classes\vSphere\Datastore.ps1",
+    ".\Classes\vSphere\VirtualMachine.ps1"
 )
 
 # Type files (.ps1xml) to be loaded when importing this module
