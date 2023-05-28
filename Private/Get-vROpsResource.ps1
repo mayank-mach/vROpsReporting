@@ -28,6 +28,9 @@ function Get-vROpsResource
         {
             $allActiveConnections = Get-allvROpsConnections
         }
+
+        #1st page number default for all queries
+        $page = 0
     }
     
     process
@@ -39,15 +42,6 @@ function Get-vROpsResource
         
         foreach ($vROpsConnection in $allActiveConnections)
         {
-            if (!( $RequestContent | Where-Object { $_.Name }))
-            {
-                $url = "https://$($vROpsConnection.vROPsServer)/suite-api/api/resources/query?pageSize=100000"#&page=100"
-            }
-            else
-            {
-                $url = "https://$($vROpsConnection.vROPsServer)/suite-api/api/resources/query"               
-            }
-            
             $body = $RequestContent|ConvertTo-Json
             Write-Verbose -Message "Using below mentioned query to get resources matching the criteria."
             Write-Verbose -Message $body
@@ -55,7 +49,16 @@ function Get-vROpsResource
                 
             try 
             {
-                $resources = (Invoke-RestMethod -Method Post -Uri $url -Headers $header  -Body $body -ErrorAction Stop).resourceList
+                #do-while loop will get resource data for all resources in case of multi page query too
+                $resources = do 
+                {
+                    #URL to create REST API query
+                    $url = "https://$($vROpsConnection.vROPsServer)/suite-api/api/resources/query?page=$page&amp;pageSize=1000"
+                    $queryOutput = Invoke-RestMethod -Method Post -Uri $url -Headers $header -Body $body -ErrorAction Stop
+                    
+                    $page += 1 # update page counter
+                    Write-output $queryOutput.resourceList #send result to variable outside the loop
+                } while ( $queryOutput.links.name -eq 'next' )
             }
             catch [System.Net.WebException]
             {

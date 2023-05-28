@@ -18,12 +18,7 @@ function Get-vROpsResourceRelationship
             HelpMessage = "Path to one or more locations.")]
         [ValidateNotNullOrEmpty()]
         [string]
-        $vROpsServer,
-
-        # Switch parameter to query for multiple resources
-        [Parameter(HelpMessage="Path to one or more locations.")]
-        [switch]
-        $bulkQuery
+        $vROpsServer
     )
     
     begin
@@ -31,6 +26,9 @@ function Get-vROpsResourceRelationship
         $allActiveConnections = Get-allvROpsConnections | Where-Object { $_.vROPsServer -eq $vROpsServer } | Select-Object -First 1
 
         $header = $allActiveConnections | Set-vROpsQueryHeader #Using private function to create header for the REST query.
+
+        #1st page number default for all queries
+        $page = 0
     }
     
     process
@@ -39,42 +37,35 @@ function Get-vROpsResourceRelationship
         {
             Write-Warning "You are not connected to any vROps Server $vROpsServer. To create a new connection use Connect-vROpsServer."
         }
-
-        if( $bulkQuery.IsPresent )
-        {
-            $url = "https://$vROpsServer/suite-api/api/resources/bulk/relationships?pageSize=100000"
             
-            if ($ID.Count -eq 1)
-            {   
-                $body = [PSCustomObject]@{
-                    relationshipType = 'ALL'
-                    resourceIds      = @("$ID")
-                    hierarchyDepth   = 10
-                } | ConvertTo-Json
-            }
-            else 
-            {
-                $body = [PSCustomObject]@{
-                    relationshipType = 'ALL'
-                    resourceIds      = $ID
-                    hierarchyDepth   = 10
-                } | ConvertTo-Json
-            }           
+        #Create JSON body for API query
+        if ($ID.Count -eq 1)
+        {   
+            $body = [PSCustomObject]@{
+                relationshipType = 'ALL'
+                resourceIds      = @("$ID")
+                hierarchyDepth   = 10
+            } | ConvertTo-Json
         }
-        else
+        else 
         {
-            $url = "https://$vROpsServer/suite-api/api/resources/$ID/relationships"                               
-        }
+            $body = [PSCustomObject]@{
+                relationshipType = 'ALL'
+                resourceIds      = $ID
+                hierarchyDepth   = 10
+            } | ConvertTo-Json
+        } 
+
         try
         {
-            if($body)
-            {
-                $relations = Invoke-RestMethod -Method Post -Uri $url -Headers $header -Body $body
-            }
-            else
-            {
-                $relations = Invoke-RestMethod -Method Get -Uri $url -Headers $header 
-            }
+            #do-while loop will get resource data for all resources in case of multi page query too
+            $relations = do {
+                $url = "https://$vROpsServer/suite-api/api/resources/bulk/relationships?page=$page&amp;pageSize=1000"
+                $queryOutput = Invoke-RestMethod -Method Post -Uri $url -Headers $header -Body $body -ErrorAction Stop
+                
+                $page += 1 # update page counter
+                Write-output $queryOutput.resourcesRelations #send result to variable outside the loop
+            } while ( $queryOutput.links.name -eq 'next' )
         }
         catch [System.Net.WebException]
         {

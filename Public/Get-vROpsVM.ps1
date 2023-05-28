@@ -165,12 +165,12 @@ function Get-vROpsVM
             $properties = Get-vROpsResourceProperty -ID $resourceId -vROpsServer $vROpsConnection.Name -propertyKeys $propertyKeys
 
             #Get all relations for Cluster compute resources in the vROps server
-            $relations = Get-vROpsResourceRelationship -ID $resourceId -vROpsServer $vROpsConnection.Name -bulkQuery
+            $relations = Get-vROpsResourceRelationship -ID $resourceId -vROpsServer $vROpsConnection.Name
 
             foreach ($item in $vROpsConnection.Group)
             {
-                $props = ($properties.values | Where-Object { $_.resourceId -eq $($item.vROpsID) }).'property-contents'.'property-content'
-                $rels  = ($relations.resourcesRelations | Where-Object { $_.relatedResources -contains $($item.vROpsID) }).resource
+                $props = ($properties | Where-Object { $_.resourceId -eq $($item.vROpsID) }).'property-contents'.'property-content'
+                $rels  = ($relations | Where-Object { $_.relatedResources -contains $($item.vROpsID) }).resource
 
                 $vmHostresource = [VirtualMachine]@{
                     Name              = Get-resourceProperty -InputObject $props -Key 'config|name' -Type Property
